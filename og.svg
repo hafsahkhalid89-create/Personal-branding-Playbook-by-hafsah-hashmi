@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1426"/>
+      <stop offset="100%" stop-color="#070B16"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E9C46A"/>
+      <stop offset="50%" stop-color="#fff6d8"/>
+      <stop offset="100%" stop-color="#E9C46A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="80" y="80" width="1040" height="470" rx="24" fill="none" stroke="rgba(233,196,106,0.25)" stroke-width="1.5"/>
+  <text x="120" y="160" font-family="Georgia,serif" font-size="18" letter-spacing="6" fill="#E9C46A" opacity="0.8" text-transform="uppercase">PERSONAL BRAND PLAYBOOK · NO. 030</text>
+  <text x="120" y="310" font-family="Georgia,serif" font-size="96" font-weight="bold" fill="url(#gold)">Get Seen</text>
+  <text x="120" y="390" font-family="Georgia,serif" font-size="96" font-weight="bold" fill="url(#gold)">Pass.</text>
+  <text x="120" y="460" font-family="Georgia,serif" font-size="28" fill="#9AA5BE">30 days to being known for something.</text>
+  <text x="120" y="510" font-family="Georgia,serif" font-size="20" fill="rgba(233,196,106,0.7)">A gift from Hafsah · The Art of Personal Branding</text>
+  <circle cx="1060" cy="300" r="80" fill="none" stroke="rgba(233,196,106,0.2)" stroke-width="1"/>
+  <text x="1060" y="315" font-family="Georgia,serif" font-size="60" fill="rgba(233,196,106,0.35)" text-anchor="middle">✦</text>
+</svg>
