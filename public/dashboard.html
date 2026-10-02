@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · Get Seen Pass</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{--paper:#F6F1E6;--paper2:#EFE8D8;--rule:#e2d8c3;--ink:#1C2133;--ink2:#4a5068;--ink3:#7b7f8f;--asc:#F5C55E;--ascD:#A87A0C;--wor:#5EDFAE;--worD:#13865C;--conD:#1679B0;--display:"Syne",system-ui,sans-serif;--body:"Manrope",system-ui,sans-serif;--mono:"JetBrains Mono",monospace}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0;padding:0 16px 60px;min-height:100vh}
+h1,h2,h3{font-family:var(--display);margin:0}
+p{margin:0}
+button{cursor:pointer;font:inherit;color:inherit}
+
+/* Gate */
+.gate{min-height:100vh;display:grid;place-items:center}
+.gate-card{width:min(420px,100%);background:#fff;border-radius:22px;padding:36px 32px;box-shadow:0 0 0 1px #e1d6bd,0 30px 60px -30px rgba(60,40,10,.4);display:grid;gap:14px}
+.gate-card h1{font-size:32px}
+.gate-card p{color:var(--ink2);font-size:15px}
+.gate-card input{width:100%;border:1.5px solid #d2c6ab;border-radius:12px;padding:12px 14px;font-size:16px;background:var(--paper);color:var(--ink);font:inherit}
+.gate-card input:focus{outline:none;border-color:var(--ascD)}
+.gate-submit{border:0;border-radius:999px;padding:13px 24px;font-weight:800;font-size:16px;background:var(--ink);color:var(--paper);justify-self:start}
+.gate-submit:hover{background:var(--ascD)}
+.gate-err{color:#c62f45;font-size:14px;font-weight:700}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ascD)}
+
+/* Dash */
+.dash-wrap{max-width:1100px;margin:0 auto;padding-top:32px;display:grid;gap:24px}
+.dash-head{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:12px}
+.head-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn-sm{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13.5px}
+.btn-sm:hover{border-color:var(--ascD);color:var(--ascD)}
+.refresh-note{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:#fff;border-radius:16px;padding:16px;box-shadow:0 0 0 1px #e1d6bd;display:grid;gap:2px}
+.tile b{font-family:var(--display);font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.tile span{font-size:13px;color:var(--ink2)}
+
+.dash-cols{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.dash-cols{grid-template-columns:minmax(0,1fr)}}
+.panel{background:#fff;border-radius:16px;padding:18px;box-shadow:0 0 0 1px #e1d6bd;display:grid;gap:12px;min-width:0}
+.panel h2{font-size:18px;display:flex;justify-content:space-between;align-items:center}
+
+.ptable{overflow-x:auto}
+.prow{display:grid;grid-template-columns:minmax(140px,1.6fr) 90px 90px 54px 110px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dotted #e1d6bd;font-size:13.5px;min-width:520px;font-variant-numeric:tabular-nums}
+.prow.ph{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.pbar{position:relative;height:18px;border-radius:999px;background:var(--paper2);overflow:hidden}
+.pbar i{position:absolute;left:0;top:0;bottom:0;background:var(--worD)}
+.pbar em{position:relative;font-style:normal;font-size:11px;font-weight:800;padding-left:8px;line-height:18px}
+
+.dpost{display:grid;gap:4px;padding:10px 0;border-bottom:1px dotted #e1d6bd;font-size:13.5px}
+.dpost:last-child{border-bottom:0}
+.dpost .who{font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dpost .note-text{color:var(--ink2)}
+.dpost a{font-weight:800;color:var(--conD);word-break:break-all}
+.dpost .cheered-tag{color:#c62f45;font-size:12px;font-weight:700}
+.dpost-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:2px}
+.cheer-btn{border:0;border-radius:999px;padding:5px 12px;font-weight:800;font-size:12.5px;background:#c62f45;color:#fff}
+.cheer-btn:hover{background:#9b2340}
+.cheer-btn:disabled{opacity:.5;cursor:not-allowed}
+.muted{color:var(--ink3);font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <h1>Dashboard</h1>
+    <p>Enter your admin password to see who's reading the book.</p>
+    <form id="gateF">
+      <input type="password" id="pwIn" placeholder="Admin password" autocomplete="current-password" required>
+      <button type="submit" class="gate-submit">Enter →</button>
+    </form>
+    <p class="gate-err" id="gateErr" hidden>Wrong password. Try again.</p>
+  </div>
+</div>
+
+<div id="dashMain" hidden>
+  <div class="dash-wrap">
+    <div class="dash-head">
+      <div>
+        <div class="eyebrow">Get Seen Pass · Private</div>
+        <h1>Who opened the book.</h1>
+      </div>
+      <div class="head-right">
+        <button class="btn-sm" id="csvBtn">⬇ Download CSV</button>
+        <span class="refresh-note" id="refreshNote">Loading…</span>
+      </div>
+    </div>
+
+    <div class="tiles" id="tiles">
+      <div class="tile"><b>—</b><span>People</span></div>
+      <div class="tile"><b>—</b><span>Opened today</span></div>
+      <div class="tile"><b>—</b><span>Total opens</span></div>
+      <div class="tile"><b>—</b><span>Avg days done</span></div>
+      <div class="tile"><b>—</b><span>Posts pinned</span></div>
+    </div>
+
+    <div class="dash-cols">
+      <div class="panel">
+        <h2>People</h2>
+        <div class="ptable" id="ptable"><p class="muted">Loading…</p></div>
+      </div>
+      <div class="panel">
+        <h2>Pinned posts</h2>
+        <div id="dposts"><p class="muted">Loading…</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PW_KEY = 'gsp:dash:pw';
+  var pw = sessionStorage.getItem(PW_KEY);
+  var dashData = { visits: [], pins: [] };
+
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtDate(ts) {
+    return ts ? new Date(ts).toLocaleDateString(undefined, {day:'numeric',month:'short',year:'numeric'}) : '—';
+  }
+  function fmtFull(ts) {
+    return ts ? new Date(ts).toLocaleString(undefined, {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+  }
+  function ago(ts) {
+    var m = Math.round((Date.now() - new Date(ts).getTime()) / 60000);
+    if (m < 1) return 'just now';
+    if (m < 60) return m + 'm ago';
+    var h = Math.round(m / 60);
+    if (h < 24) return h + 'h ago';
+    return Math.round(h / 24) + 'd ago';
+  }
+
+  function loadDash() {
+    if (!pw) return;
+    fetch('/api/dashboard', { headers: { 'x-admin-password': pw } })
+      .then(function (r) {
+        if (r.status === 401) { sessionStorage.removeItem(PW_KEY); location.reload(); return null; }
+        return r.json();
+      })
+      .then(function (d) {
+        if (!d) return;
+        dashData = d;
+        renderDash(d);
+        document.getElementById('refreshNote').textContent = 'Refreshed ' + fmtFull(Date.now());
+      })
+      .catch(function () {
+        document.getElementById('refreshNote').textContent = 'Error loading — will retry';
+      });
+  }
+
+  function renderDash(d) {
+    var t = d.totals;
+    document.getElementById('tiles').innerHTML = [
+      [t.people,      'People'],
+      [t.openedToday, 'Opened today'],
+      [t.totalOpens,  'Total opens'],
+      [t.avgDone,     'Avg days done'],
+      [t.postsPinned, 'Posts pinned']
+    ].map(function (x) {
+      return '<div class="tile"><b>' + x[0] + '</b><span>' + x[1] + '</span></div>';
+    }).join('');
+    renderVisits(d.visits);
+    renderPosts(d.pins);
+  }
+
+  function renderVisits(visits) {
+    var el = document.getElementById('ptable');
+    if (!visits || !visits.length) { el.innerHTML = '<p class="muted">No visits yet.</p>'; return; }
+    var html = '<div class="prow ph"><span>Person</span><span>First seen</span><span>Last seen</span><span>Opens</span><span>Progress</span></div>';
+    visits.forEach(function (v) {
+      html += '<div class="prow">' +
+        '<span><b>' + esc(v.name || 'Unknown') + '</b></span>' +
+        '<span>' + fmtDate(v.first_seen) + '</span>' +
+        '<span>' + ago(v.last_seen) + '</span>' +
+        '<span>' + (v.opens || 0) + '</span>' +
+        '<span class="pbar"><i style="width:' + Math.round((v.done || 0) / 30 * 100) + '%"></i><em>' + (v.done || 0) + '/30</em></span>' +
+        '</div>';
+    });
+    el.innerHTML = html;
+  }
+
+  function renderPosts(pins) {
+    var el = document.getElementById('dposts');
+    if (!pins || !pins.length) { el.innerHTML = '<p class="muted">No posts pinned yet.</p>'; return; }
+    el.innerHTML = '';
+    pins.forEach(function (p) {
+      var div = document.createElement('div'); div.className = 'dpost';
+      div.innerHTML = '<div class="who"><b>' + esc(p.name || 'Unknown') + '</b><small style="color:var(--ink3);font-size:12px">' + ago(p.created_at) + '</small></div>' +
+        (p.note ? '<p class="note-text">' + esc(p.note) + '</p>' : '');
+      var row = document.createElement('div'); row.className = 'dpost-row';
+      if (p.url) {
+        var a = document.createElement('a'); a.href = p.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'Open post ↗'; row.appendChild(a);
+      }
+      if (p.cheered) {
+        var c = document.createElement('span'); c.className = 'cheered-tag'; c.textContent = '♥ cheered'; row.appendChild(c);
+      } else {
+        var btn = document.createElement('button'); btn.className = 'cheer-btn'; btn.textContent = '♥ Cheer';
+        (function (id, b) { b.onclick = function () { cheer(id, b); }; })(p.id, btn);
+        row.appendChild(btn);
+      }
+      div.appendChild(row);
+      el.appendChild(div);
+    });
+  }
+
+  function cheer(id, btn) {
+    btn.disabled = true;
+    fetch('/api/cheer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': pw },
+      body: JSON.stringify({ id: id })
+    }).then(function (r) {
+      if (r.ok) loadDash(); else btn.disabled = false;
+    }).catch(function () { btn.disabled = false; });
+  }
+
+  function downloadCSV() {
+    var rows = [['Name', 'First opened', 'Last seen', 'Opens', 'Days done']];
+    (dashData.visits || []).forEach(function (v) {
+      rows.push([v.name || 'Unknown', fmtFull(v.first_seen), fmtFull(v.last_seen), v.opens || 0, v.done || 0]);
+    });
+    var csv = rows.map(function (r) {
+      return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\n');
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'get-seen-pass-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.click();
+  }
+
+  function showDash() {
+    document.getElementById('gate').hidden = true;
+    document.getElementById('dashMain').hidden = false;
+    loadDash();
+    setInterval(loadDash, 30000);
+  }
+
+  if (pw) showDash();
+
+  document.getElementById('gateF').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var entered = document.getElementById('pwIn').value;
+    document.getElementById('gateErr').hidden = true;
+    fetch('/api/dashboard', { headers: { 'x-admin-password': entered } })
+      .then(function (r) {
+        if (r.status === 401) { document.getElementById('gateErr').hidden = false; return; }
+        sessionStorage.setItem(PW_KEY, entered); pw = entered; showDash();
+      })
+      .catch(function () {
+        document.getElementById('gateErr').textContent = 'Connection error. Try again.';
+        document.getElementById('gateErr').hidden = false;
+      });
+  });
+
+  document.getElementById('csvBtn').addEventListener('click', downloadCSV);
+})();
+</script>
+</body>
+</html>
